@@ -38,13 +38,17 @@ set :deploy_to, "/u/apps/rasplex-update-server"
 
 namespace :deploy do
 
+
+
   desc 'Restart application'
-  task :restart do
-    on roles(:app), in: :sequence, wait: 5 do
+  task :restart do 
+    on roles(:app), in: :sequence, wait: 5 do 
       # Your restart mechanism here, for example:
       # execute :touch, release_path.join('tmp/restart.txt')
+        execute :sv, 'restart updater'
     end
   end
+
 
   after :publishing, :restart
 
