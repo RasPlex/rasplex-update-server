@@ -8,4 +8,6 @@ gem "datamapper", "~> 1.2.0"
 gem "dm-sqlite-adapter", "~> 1.2.0"
 gem "sqlite3-ruby", "~> 1.3.3"
 gem "eventmachine", "~> 1.0.3"
+gem 'capistrano', '~> 3.1.0'
+gem 'capistrano-bundler', '~> 1.1.2'
 
