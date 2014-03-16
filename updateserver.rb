@@ -136,6 +136,14 @@ class UpdateHTTP < Sinatra::Base
   end
 
   # Request runs on the reactor thread (with threaded set to false)
+  get '/' do
+    # check that we have a spell for this profile, or else throw an error
+    status 200
+    body "pong"
+  end
+
+
+  # Request runs on the reactor thread (with threaded set to false)
   get '/update' do
     # check that we have a spell for this profile, or else throw an error
     status 200
