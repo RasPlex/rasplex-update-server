@@ -15,7 +15,6 @@ server 'sources.rasplex.com',
   user: 'deploy', 
   roles: %w{app},
   ssh_options: {
-    user: 'dale.hamel',
     forward_agent: true
   }  
 
