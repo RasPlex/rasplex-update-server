@@ -1,0 +1,5 @@
+db:
+  user:     updater
+  password: updater
+  hostname: localhost
+  dbname:   rasplex_updater
