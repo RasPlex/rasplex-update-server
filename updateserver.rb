@@ -1,132 +1,12 @@
+#!/usr/bin/env ruby
 
 require 'sinatra'
 require 'sinatra/config_file'
-
-require 'json'
-require 'yaml'
-require 'date'
-
 require 'thin'
-require 'httparty'
-require 'data_mapper'
-require 'dm-migrations'
+require 'json'
 
-
-class UpdateRequest
-  include DataMapper::Resource
-  property :id,          Serial
-  property :serial,      String, :required => true
-  property :version,     String, :required => true
-  property :time,        DateTime, :required => true
-  property :release,     String
-end
-
-
-class Release
-  include DataMapper::Resource
-  property :id,          Serial
-  property :install_url, String, :required => true, :length => 200 
-  property :install_sum, String, :required => true, :length => 100
-  property :update_url,  String, :required => true, :length => 200
-  property :update_sum,  String, :required => true, :length => 100
-  property :version,     String, :required => true
-  property :autoupdate,  Boolean, :required => true
-  property :time,        DateTime, :required => true
-  property :notes,       String, :required => true, :length => 800
-end
-
-class ScraperJob
-
-  def initialize
-    # make this a config constant
-    EM.add_periodic_timer(120) do
-      scrape
-    end
-  end
-
-  def scrape
-
-
-    puts "Ran a scrape"
-    response = HTTParty.get('https://api.github.com/repos/Rasplex/Rasplex/releases', :headers => {"User-Agent" => "Wget/1.14 (linux-gnu)"})
-
-    #puts response.body, response.code, response.message, response.headers.inspect
-
-    if response.code == 200
-      parse response.body
-    end
-  end
-
-  def parse ( body )
-
-    baseurl = "https://github.com/RasPlex/RasPlex/releases/download"
-
-    payload = JSON.parse(body)
-  
-    payload.each do | release |
-
-      body = YAML.load(release["body"])
-      puts body
-      name = release["name"]
-      autoupdate = release["prerelease"] == false
-
-      install = nil
-      update = nil
-      release["assets"].each do | asset |
-
-        if asset['name'] =~ /\.img\.gz$/  
-          install = asset
-          install["download_url"] = "#{baseurl}/#{name}/#{asset['name']}"
-          body["install"].each do | data |
-            if data.has_key?("md5sum")
-              install["checksum"] = data["md5sum"]
-            end
-          end
-
-        elsif asset['name'] =~ /\.tar\.gz$/
-          update = asset
-          update["download_url"] = "#{baseurl}/#{name}/#{asset['name']}"
-          body["update"].each do | data |
-            if data.has_key?("shasum")
-              update["checksum"] = data["shasum"]
-            end
-          end
-        end
-
-      end
-
-      time = DateTime.iso8601(release["published_at"])
-
-      notes = body["changes"].join("\n")
-    
-      if not Release.last(:version => name ) and not install.nil? and not update.nil?
-      
-        release = Release.new(
-            :install_url => install["download_url"],
-            :install_sum => install["checksum"],
-            :update_url  => update["download_url"],
-            :update_sum  => update["checksum"],
-            :autoupdate  => autoupdate,
-            :version     => name,
-            :time        => time,
-            :notes       =>  notes 
-        )
-        if release.save
-          puts "Release #{name} added"
-        else
-          release.errors.each do |e|
-            puts e
-          end
-        end
-
-      end
-
-    end
-
-  end
-end
-
-
+require_relative 'lib/models.rb'
+require_relative 'lib/scraper.rb'
 
 class UpdateHTTP < Sinatra::Base
   # threaded - False: Will take requests on the reactor thread
@@ -163,10 +43,19 @@ end
 
 class UpdateServer
 
-  def initialize()
 
-    db_path = "#{File.join(File.dirname(File.expand_path(__FILE__)),'db','development.db')}"
-    db_url = "sqlite3://#{db_path}"
+  def initialize(settings)
+
+    @settings = settings
+
+    if ENV['UPDATER_ENVIRONMENT'] == "production"
+      puts 'production'
+      db_url = "mysql://#{settings.db['user']}:#{settings.db['password']}@#{settings.db['hostname']}/#{settings.db['dbname']}"
+    else
+      db_path = "#{File.join(File.dirname(File.expand_path(__FILE__)),'db','development.db')}"
+      puts "Using DB at #{db_path}"
+      db_url = "sqlite3://#{db_path}"
+    end
 
     DataMapper.setup :default, db_url 
     DataMapper.finalize
@@ -176,19 +65,20 @@ class UpdateServer
   end
 
 
-  def start_scraping
-    scraper = ScraperJob.new()  
+  def start_scraping( interval )
+    scraper = ScraperJob.new( interval )  
     scraper.scrape()
   end
 
-  def run(opts={})
+  def run()
 
     # Start the reactor
     EM.run do
-      # define some defaults for our app
-      server  = opts[:server] || 'thin'
-      host    = opts[:host]   || '0.0.0.0'
-      port    = opts[:port]   || '8080'
+
+      server     = @settings.server    # 'thin'
+      host       = @settings.host      # '0.0.0.0'
+      port       = @settings.port      # '9000'
+      interval   = @settings.interval  # '120'
 
       dispatch = Rack::Builder.app do
         map '/' do
@@ -211,13 +101,14 @@ class UpdateServer
         Port:   port
       })
       init_sighandlers
-      start_scraping
+      start_scraping(interval)
 
 
     end
   
   end
 
+  # Needed during testing
   def init_sighandlers
     trap(:INT)  {"Got interrupt"; EM.stop(); exit }
     trap(:TERM) {"Got term";      EM.stop(); exit }
@@ -225,6 +116,13 @@ class UpdateServer
   end
 
 end
-# start the applicatin
-updateServer = UpdateServer.new
-updateServer.run :port => 9000
+
+# Load configs
+config = "#{File.join(File.dirname(File.expand_path(__FILE__)),'config','config.yml')}"
+database_config = "#{File.join(File.dirname(File.expand_path(__FILE__)),'config','database.yml')}"
+config_file config
+config_file database_config
+
+# start the application
+updateServer = UpdateServer.new(settings)
+updateServer.run 

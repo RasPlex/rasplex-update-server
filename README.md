@@ -115,6 +115,16 @@ You'll need to do the following on the server:
 + Add the included runit recipe
 + Set up your mysql database 
 
+### Mysql setup
+
+Replace with appropriate values
+
+```
+  create database rasplex\_updater;
+  grant all on rasplex\_updater.\* to 'updater'@'localhost' identified by 'updater';
+```
+
+
 ### Runit setup
 
 This is a bit annoying to find in [the docs](http://smarden.org/runit/faq.html), so it's documented here. After installing runit via your package manager do:

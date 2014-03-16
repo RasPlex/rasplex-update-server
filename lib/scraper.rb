@@ -8,9 +8,9 @@ require_relative 'models.rb'
 
 class ScraperJob
 
-  def initialize
+  def initialize( interval )
     # make this a config constant
-    EM.add_periodic_timer(120) do
+    EM.add_periodic_timer(interval) do
       scrape
     end
   end

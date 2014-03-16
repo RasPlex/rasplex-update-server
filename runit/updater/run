@@ -3,5 +3,5 @@
 exec 2>&1
 cd /u/apps/rasplex-update-server/current
 
-exec chpst -u deploy  bundle exec ruby updateserver.rb >> /var/log/update-server
-
+export UPDATER_ENVIRONMENT=production 
+exec chpst -u deploy bundle exec ruby updateserver.rb >> /var/log/update-server
