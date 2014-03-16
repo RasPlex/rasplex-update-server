@@ -1,6 +1,5 @@
 # config valid only for Capistrano 3.1
 
-require 'bundler/deployment'
 
 lock '3.1.0'
 
