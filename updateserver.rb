@@ -37,20 +37,23 @@ end
 
 class ScraperJob
 
+  def initialize
+    # make this a config constant
+    EM.add_periodic_timer(120) do
+      scrape
+    end
+  end
+
   def scrape
 
-    EM.defer do
 
-      response = HTTParty.get('https://api.github.com/repos/Rasplex/Rasplex/releases', :headers => {"User-Agent" => "Wget/1.14 (linux-gnu)"})
+    puts "Ran a scrape"
+    response = HTTParty.get('https://api.github.com/repos/Rasplex/Rasplex/releases', :headers => {"User-Agent" => "Wget/1.14 (linux-gnu)"})
 
-      #puts response.body, response.code, response.message, response.headers.inspect
+    #puts response.body, response.code, response.message, response.headers.inspect
 
-      if response.code == 200
-        parse response.body
-      end
-      sleep 120 # make this a config constant, but we are limited to 1 request / minute
-
-      EM.defer scrape
+    if response.code == 200
+      parse response.body
     end
   end
 
@@ -129,7 +132,7 @@ class UpdateHTTP < Sinatra::Base
   # threaded - False: Will take requests on the reactor thread
   #            True:  Will queue request for background thread
   configure do
-    set :threaded, true
+    set :threaded, false
   end
 
   # Request runs on the reactor thread (with threaded set to false)
@@ -216,4 +219,4 @@ class UpdateServer
 end
 # start the applicatin
 updateServer = UpdateServer.new
-updateServer.run :port => 8080
+updateServer.run :port => 9000
