@@ -56,6 +56,32 @@ Where each element in the list is a release, and there are actual checksum, etc.
 
 Just returns "pong", indicating te service is running.
 
+# Creating a release
+
+The github release should be created against the desired tag, and the update and install archives should be added to the release.
+
+Note that the suffixes are very important, as they differentiate the update from the install archive.
+
+The body of the release should be a well-formed yaml file of the following format:
+
+```
+  changes:
+    - A change
+    - Another change
+  
+  install:
+  
+    - file: RasPlex-test.img.gz
+    - md5sum: a823d770a0ccfefe0a04b34c677e6bf8
+  
+  update:
+  
+    - file: RasPlex-test.tar.gz
+    - shasum: sumthing
+```    
+     
+
+
 
 # System setup
 
