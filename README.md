@@ -28,6 +28,18 @@ Pingdom is recommended to monitor the root page, to notify of downtime.
 
 Returns a well-formatted XML file suitable for updating a plexHT installation based on the update.erb.
 
+```
+  <?xml version="1.0" encoding="UTF-8"?>
+  <MediaContainer friendlyName="myPlex" identifier="com.plexapp.plugins.myplex" size="1" title="Updates">
+    
+      <Release id="1" version="test" added="" fixed="" live="true" autoupdate="true" createdAt="2014-03-16T01:57:11+00:00">
+        <Package file="https://github.com/RasPlex/RasPlex/releases/download/test/RasPlex-test.tar.gz" fileHash="sumthing" fileName="RasPlex-test.tar.gz" delta="false"/>
+      </Release>
+    
+  </MediaContainer>
+
+```
+
 ## /install
 
 Returns a json document with the following structure:
@@ -80,7 +92,7 @@ The body of the release should be a well-formed yaml file of the following forma
     - shasum: sumthing
 ```    
      
-
+Note that the spacing after each section is important, so that github will also interpret it as a markdown file and display it properly to users visiting the releases page.
 
 
 # System setup
