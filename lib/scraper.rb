@@ -37,7 +37,6 @@ class ScraperJob
     payload.each do | release |
 
       body = YAML.load(release["body"])
-      puts body
       name = release["name"]
       autoupdate = release["prerelease"] == false
 
@@ -83,7 +82,7 @@ class ScraperJob
             :notes       =>  notes 
         )
         if release.save
-          puts "Release #{name} added"
+          puts "Release #{name} added #{JSON.pretty_generate(release)}"
         else
           release.errors.each do |e|
             puts e

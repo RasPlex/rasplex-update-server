@@ -4,6 +4,8 @@ require 'sinatra'
 require 'sinatra/config_file'
 require 'thin'
 require 'json'
+require 'date'
+
 
 require_relative 'lib/models.rb'
 require_relative 'lib/scraper.rb'
@@ -28,6 +30,8 @@ class UpdateHTTP < Sinatra::Base
     # check that we have a spell for this profile, or else throw an error
     status 200
     releases = Release.all
+    current_time = DateTime.now  
+    puts "#{current_time} #{params} #{request.ip}"
     erb :update, :locals => { :releases => releases }
   end
 
@@ -60,6 +64,8 @@ class UpdateServer
     DataMapper.setup :default, db_url 
     DataMapper.finalize
     DataMapper.auto_upgrade!
+    UpdateRequest.auto_migrate!
+    Release.auto_migrate!
 
 
   end

@@ -6,6 +6,8 @@ class UpdateRequest
   include DataMapper::Resource
   property :id,          Serial
   property :serial,      String, :required => true
+  property :hwrev,       String, :required => true
+  property :ipaddr,      String, :required => true
   property :version,     String, :required => true
   property :time,        DateTime, :required => true
   property :release,     String
