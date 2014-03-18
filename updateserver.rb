@@ -77,7 +77,7 @@ class UpdateServer
     @settings = settings
 
     if ENV['UPDATER_ENVIRONMENT'] == "production"
-      puts 'production'
+      puts "#{Time.now.utc} Running as production"
       db_url = "mysql://#{settings.db['user']}:#{settings.db['password']}@#{settings.db['hostname']}/#{settings.db['dbname']}"
     else
       db_path = "#{File.join(File.dirname(File.expand_path(__FILE__)),'db','development.db')}"

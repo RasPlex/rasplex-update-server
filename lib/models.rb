@@ -56,7 +56,7 @@ def saveUpdateComplete(current_time, params, source)
       :time       =>  current_time 
   )
   if upcomplete.save
-    puts "Update request saved #{JSON.pretty_generate(upcomplete)}"
+    puts "#{Time.now.utc} Update request saved #{JSON.pretty_generate(upcomplete)}"
   else
     upcomplete.errors.each do |e|
       puts e
@@ -76,7 +76,7 @@ def saveUpdateRequest(current_time, params, source)
       :time    =>  current_time 
   )
   if upreq.save
-    puts "Update request saved #{JSON.pretty_generate(upreq)}"
+    puts "#{Time.now.utc} Update request saved #{JSON.pretty_generate(upreq)}"
   else
     upreq.errors.each do |e|
       puts e

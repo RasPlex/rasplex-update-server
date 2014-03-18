@@ -18,7 +18,7 @@ class ScraperJob
   def scrape
 
 
-    puts "Ran a scrape"
+    puts "#{Time.now.utc} Ran a scrape"
     response = HTTParty.get('https://api.github.com/repos/Rasplex/Rasplex/releases', :headers => {"User-Agent" => "Wget/1.14 (linux-gnu)"})
 
     #puts response.body, response.code, response.message, response.headers.inspect
@@ -83,7 +83,7 @@ class ScraperJob
             :notes       => notes 
         )
         if release.save
-          puts "Release #{name} added #{JSON.pretty_generate(release)}"
+          puts "#{Time.now.utc} Release #{name} added #{JSON.pretty_generate(release)}"
         else
           release.errors.each do |e|
             puts e
