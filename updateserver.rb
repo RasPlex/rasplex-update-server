@@ -31,7 +31,7 @@ class UpdateHTTP < Sinatra::Base
     status 200
     releases = Release.all
     current_time = DateTime.now  
-    puts "#{current_time} #{params} #{request.ip}"
+    saveUpdateRequest(current_time, params, request.ip)
     erb :update, :locals => { :releases => releases }
   end
 

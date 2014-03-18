@@ -10,7 +10,6 @@ class UpdateRequest
   property :ipaddr,      String, :required => true
   property :version,     String, :required => true
   property :time,        DateTime, :required => true
-  property :release,     String
 end
 
 
@@ -28,4 +27,21 @@ class Release
   property :notes,       String, :required => true, :length => 800
 end
 
+def saveUpdateRequest(current_time, params, source)
+      
+  upreq = UpdateRequest.new(
+      :serial  =>  params['serial'],
+      :hwrev   =>  params['revision'],
+      :version =>  params['version'],
+      :ipaddr  =>  source,
+      :time    =>  current_time 
+  )
+  if upreq.save
+    puts "Update request saved #{JSON.pretty_generate(upreq)}"
+  else
+    upreq.errors.each do |e|
+      puts e
+    end
+  end
 
+end 
