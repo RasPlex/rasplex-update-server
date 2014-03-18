@@ -17,26 +17,32 @@ class UpdateHTTP < Sinatra::Base
     set :threaded, false
   end
 
-  # Request runs on the reactor thread (with threaded set to false)
+  # Send a response for pingdom
   get '/' do
-    # check that we have a spell for this profile, or else throw an error
     status 200
     body "pong"
   end
 
 
-  # Request runs on the reactor thread (with threaded set to false)
+  # Callback once a client is done updating
+  get '/updated' do
+    status 200
+    current_time = DateTime.now  
+    saveUpdateComplete(current_time, params, request.ip)
+    body "Thanks for updating"
+  end
+
+
+  # Request to list available updates in channel
   get '/update' do
-    # check that we have a spell for this profile, or else throw an error
     status 200
     current_time = DateTime.now  
     releases = selectReleases(current_time, params, request.ip)
     erb :update, :locals => { :releases => releases }
   end
 
-  # Request runs on the reactor thread (with threaded set to false)
+  # Request to list available install images
   get '/install' do
-    # check that we have a spell for this profile, or else throw an error
     status 200
     body JSON.dump Release.all
   end
