@@ -10,6 +10,11 @@ require 'date'
 require_relative 'lib/models.rb'
 require_relative 'lib/scraper.rb'
 
+$CHANNELS = {
+  "2"  => "stable",
+  "16" => "prerelease",
+}
+
 class UpdateHTTP < Sinatra::Base
   # threaded - False: Will take requests on the reactor thread
   #            True:  Will queue request for background thread
@@ -54,10 +59,13 @@ end
 def selectReleases(current_time, params, source)
   saveUpdateRequest(current_time, params, source)
 
+  
+
   channel = "stable"
-  if params["channel"]
-    channel = params["channel"]
+  if params["channel"] and $CHANNELS.has_key? params["channel"]
+    channel = $CHANNELS[params["channel"]]
   end
+  puts "Using channel #{channel}"
 
   candidates = Release.all(:channel => channel.downcase)
 
