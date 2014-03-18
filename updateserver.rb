@@ -29,6 +29,7 @@ class UpdateHTTP < Sinatra::Base
     status 200
     current_time = DateTime.now  
     saveUpdateComplete(current_time, params, request.ip)
+    puts "Got #{params}"
     body "Thanks for updating"
   end
 
@@ -38,6 +39,7 @@ class UpdateHTTP < Sinatra::Base
     status 200
     current_time = DateTime.now  
     releases = selectReleases(current_time, params, request.ip)
+    puts "Got #{params}"
     erb :update, :locals => { :releases => releases }
   end
 
