@@ -64,8 +64,8 @@ class UpdateServer
     DataMapper.setup :default, db_url 
     DataMapper.finalize
     DataMapper.auto_upgrade!
-    UpdateRequest.auto_migrate!
-    Release.auto_migrate!
+#    UpdateRequest.auto_migrate!
+#    Release.auto_migrate!
 
 
   end
