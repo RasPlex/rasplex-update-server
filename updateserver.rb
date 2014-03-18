@@ -11,8 +11,8 @@ require_relative 'lib/models.rb'
 require_relative 'lib/scraper.rb'
 
 $CHANNELS = {
-  "2"  => "stable",
-  "16" => "prerelease",
+  "16"  => "stable",
+  "2" => "prerelease",
 }
 
 class UpdateHTTP < Sinatra::Base
