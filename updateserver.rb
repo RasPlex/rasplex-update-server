@@ -29,9 +29,8 @@ class UpdateHTTP < Sinatra::Base
   get '/update' do
     # check that we have a spell for this profile, or else throw an error
     status 200
-    releases = Release.all
     current_time = DateTime.now  
-    saveUpdateRequest(current_time, params, request.ip)
+    releases = selectReleases(current_time, params, request.ip)
     erb :update, :locals => { :releases => releases }
   end
 
@@ -44,6 +43,25 @@ class UpdateHTTP < Sinatra::Base
 
 end
 
+def selectReleases(current_time, params, source)
+  saveUpdateRequest(current_time, params, source)
+
+  channel = "stable"
+  if params["channel"]
+    channel = params["channel"]
+  end
+
+  candidates = Release.all(:channel => channel.downcase)
+
+  releases = []
+
+  candidates.each do | candidate |
+    # Do any filtering here
+    releases.push candidate
+  end
+
+  return releases
+end
 
 class UpdateServer
 

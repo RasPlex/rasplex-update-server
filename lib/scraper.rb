@@ -38,7 +38,7 @@ class ScraperJob
 
       body = YAML.load(release["body"])
       name = release["name"]
-      autoupdate = release["prerelease"] == false
+      channel = release["prerelease"] ? "prerelease" : "stable"
 
       install = nil
       update = nil
@@ -76,10 +76,11 @@ class ScraperJob
             :install_sum => install["checksum"],
             :update_url  => update["download_url"],
             :update_sum  => update["checksum"],
-            :autoupdate  => autoupdate,
             :version     => name,
+            :channel     => channel,
+            :autoupdate  => true,
             :time        => time,
-            :notes       =>  notes 
+            :notes       => notes 
         )
         if release.save
           puts "Release #{name} added #{JSON.pretty_generate(release)}"

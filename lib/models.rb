@@ -9,6 +9,7 @@ class UpdateRequest
   property :hwrev,       String, :required => true
   property :ipaddr,      String, :required => true
   property :version,     String, :required => true
+  property :channel,     String, :required => true
   property :time,        DateTime, :required => true
 end
 
@@ -22,7 +23,8 @@ class Release
   property :update_url,  String, :required => true, :length => 200
   property :update_sum,  String, :required => true, :length => 100
   property :version,     String, :required => true
-  property :autoupdate,  Boolean, :required => true
+  property :channel,     String, :required => true
+  property :autoupdate,  Boolean, :required => false
   property :time,        DateTime, :required => true
   property :notes,       String, :required => true, :length => 800
 end
