@@ -5,6 +5,7 @@ require 'sinatra/config_file'
 require 'thin'
 require 'json'
 require 'date'
+require 'geoip'
 
 
 require_relative 'lib/models.rb'
@@ -14,6 +15,9 @@ $CHANNELS = {
   "16"  => "stable",
   "2" => "prerelease",
 }
+geofile = "#{File.join(File.dirname(File.expand_path(__FILE__)),'geoip','GeoLiteCity.dat')}"
+puts geofile
+$GEOIP =  GeoIP.new(geofile)
 
 class UpdateHTTP < Sinatra::Base
   # threaded - False: Will take requests on the reactor thread
@@ -30,7 +34,7 @@ class UpdateHTTP < Sinatra::Base
 
   get '/stats' do
     status 200
-    body getStats()
+    body getStats($GEOIP)
   end
 
 

@@ -43,12 +43,39 @@ class Release
 end
 
 
-def getStats()
+def getStats(geo_db)
   unique = UpdateRequest.all(:fields => [:serial], :unique => true)
   count = unique.length
 
+  countries = {}
+  cities = {}
+  serials = []
+  UpdateRequest.all.each do | user |
+    if not serials.include? user.serial
+      country = geo_db.city(user.ipaddr).country_name
+      city = country + "/" + geo_db.city(user.ipaddr).city_name
+       
+      if countries.has_key? country
+        countries[country] = countries[country] + 1
+      else
+        countries[country] = 1
+      end
+
+     
+      if cities.has_key? city
+        cities[city] = cities[city] + 1
+      else
+        cities[city] =  1
+      end
+
+      serials.push user.serial
+    end 
+  end
+
   stats = {
-    :users => count
+    :users     => count,
+    :cities    => cities,
+    :countries => countries,
   }
   return JSON.pretty_generate(stats)
 end

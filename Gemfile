@@ -8,8 +8,7 @@ gem "datamapper", "~> 1.2.0"
 gem "dm-sqlite-adapter", "~> 1.2.0"
 gem "eventmachine", "~> 1.0.3"
 gem 'capistrano', '~> 3.1.0'
-gem 'mysql2'
-gem "dm-mysql-adapter", "~> 1.2.0"
+gem "geoip", "~> 1.3.5"
 
 group :production do
   gem 'mysql2'
@@ -19,6 +18,8 @@ end
 group :development, :test do
   gem 'sqlite3'
   gem "sqlite3-ruby", "~> 1.3.3"
+  gem 'mysql2'
+  gem "dm-mysql-adapter", "~> 1.2.0"
 end
 
 
