@@ -23,6 +23,8 @@ class ScraperJob
 
     #puts response.body, response.code, response.message, response.headers.inspect
 
+    Release.all.destroy
+
     if response.code == 200
       parse response.body
     end

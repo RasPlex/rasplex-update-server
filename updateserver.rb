@@ -69,6 +69,10 @@ def selectReleases(current_time, params, source)
 
   candidates = Release.all(:channel => channel.downcase)
 
+  if channel != "stable"
+    candidates.push(Release.all(:channel => "stable"))
+  end
+
   releases = []
 
   candidates.each do | candidate |
