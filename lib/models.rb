@@ -43,6 +43,15 @@ class Release
 end
 
 
+def getStats()
+  unique = UpdateRequest.all(:fields => [:serial], :unique => true)
+  count = unique.length
+
+  stats = {
+    :users => count
+  }
+  return JSON.pretty_generate(stats)
+end
 
 def saveUpdateComplete(current_time, params, source)
       

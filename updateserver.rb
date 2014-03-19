@@ -28,13 +28,18 @@ class UpdateHTTP < Sinatra::Base
     body "pong"
   end
 
+  get '/stats' do
+    status 200
+    body getStats()
+  end
+
 
   # Callback once a client is done updating
   get '/updated' do
     status 200
     current_time = DateTime.now  
-    saveUpdateComplete(current_time, params, request.ip)
     puts "Got #{params}"
+    saveUpdateComplete(current_time, params, request.ip)
     body "Thanks for updating"
   end
 
