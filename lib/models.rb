@@ -14,6 +14,16 @@ class UpdateCompleted
 end
 
 
+class InstallRequest
+  include DataMapper::Resource
+  property :id,          Serial
+  property :ipaddr,      String, :required => true
+  property :platform,    String, :required => true
+  property :time,        DateTime, :required => true
+end
+
+
+
 
 class UpdateRequest
   include DataMapper::Resource
@@ -115,6 +125,30 @@ def saveUpdateRequest(current_time, params, source)
     puts "#{Time.now.utc} Update request saved #{JSON.pretty_generate(upreq)}"
   else
     upreq.errors.each do |e|
+      puts e
+    end
+  end
+
+end 
+
+def saveInstallRequest(current_time, params, source)
+
+  if params.has_key? 'platform'
+    platform = params['platform']
+  else
+    platform = params['unknown']
+  end
+      
+  instreq = InstallRequest.new(
+      :platform  =>  platform,
+      :ipaddr    =>  source,
+      :time      =>  current_time 
+  )
+
+  if instreq.save
+    puts "#{Time.now.utc} Install request saved #{JSON.pretty_generate(instreq)}"
+  else
+    instreq.errors.each do |e|
       puts e
     end
   end
