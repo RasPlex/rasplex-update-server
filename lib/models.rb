@@ -55,7 +55,7 @@ end
 
 def getStats(geo_db)
   unique = UpdateRequest.all(:fields => [:serial], :unique => true)
-  count = unique.length
+  usercount = unique.length
 
   countries = {}
   serials = []
@@ -90,7 +90,7 @@ def getStats(geo_db)
   installs['total'] = count
 
   stats = {
-    :users     => count,
+    :users     => usercount,
     :countries => countries,
     :installs  => installs
   }
