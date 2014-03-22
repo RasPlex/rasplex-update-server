@@ -58,7 +58,6 @@ def getStats(geo_db)
   count = unique.length
 
   countries = {}
-  cities = {}
   serials = []
   UpdateRequest.all.each do | user |
     if not serials.include? user.serial
@@ -70,22 +69,30 @@ def getStats(geo_db)
       else
         countries[country] = 1
       end
-
-     
-      if cities.has_key? city
-        cities[city] = cities[city] + 1
-      else
-        cities[city] =  1
-      end
-
+    
       serials.push user.serial
     end 
   end
 
+  installs = {}
+  count = 0
+  InstallRequest.all.each do | install |
+    count = count + 1 
+    
+    if installs.has_key? install.platform
+      installs[install.platform] = installs[install.platform] + 1
+    else
+      installs[install.platform] = 1
+    end
+
+  end
+
+  installs['total'] = count
+
   stats = {
     :users     => count,
-    :cities    => cities,
     :countries => countries,
+    :installs  => installs
   }
   return JSON.pretty_generate(stats)
 end
