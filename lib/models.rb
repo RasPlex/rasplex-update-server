@@ -1,3 +1,5 @@
+
+require 'date'
 require 'data_mapper'
 require 'dm-migrations'
 
@@ -54,47 +56,53 @@ end
 
 
 def getStats(geo_db)
-  unique = UpdateRequest.all(:fields => [:serial], :unique => true)
-  usercount = unique.length
-
-  countries = {}
-  serials = []
-  UpdateRequest.all.each do | user |
-    if not serials.include? user.serial
-      country = geo_db.city(user.ipaddr).country_name
-      city = country + "/" + geo_db.city(user.ipaddr).city_name
-       
-      if countries.has_key? country
-        countries[country] = countries[country] + 1
-      else
-        countries[country] = 1
-      end
-    
-      serials.push user.serial
-    end 
-  end
-
-  installs = {}
-  count = 0
-  InstallRequest.all.each do | install |
-    count = count + 1 
-    
-    if installs.has_key? install.platform
-      installs[install.platform] = installs[install.platform] + 1
-    else
-      installs[install.platform] = 1
-    end
-
-  end
-
-  installs['total'] = count
-
   stats = {
-    :users     => usercount,
-    :countries => countries,
-    :installs  => installs
+    :users => {
+      :days_ago =>{},
+      :total => 0,
+    },
+    :installs => {
+      :days_ago =>{},
+      :total => {},
+    },
+    :last_update => DateTime.now,
+
   }
-  return JSON.pretty_generate(stats)
+  for lookback in (1..7).to_a.reverse
+    value = repository(:default).adapter.select('SELECT COUNT(DISTINCT serial) 
+                                                  FROM update_requests 
+                                                  WHERE time BETWEEN date_sub(now(),INTERVAL ? DAY) and now();', lookback)
+    stats[:users][:days_ago][lookback] = value
+  end
+
+  stats[:users][:total] = repository(:default).adapter.select('SELECT COUNT(DISTINCT serial) 
+                                                                FROM update_requests;')
+
+
+  for lookback in (1..7).to_a.reverse
+    value = repository(:default).adapter.select('SELECT platform, COUNT(DISTINCT ipaddr) 
+                                                  FROM install_requests 
+                                                  WHERE time BETWEEN date_sub(now(),INTERVAL ? DAY) and now()
+                                                  GROUP BY platform;', lookback)
+    stats[:installs][:days_ago][lookback] = {}
+    value.each do | platform |
+       stats[:installs][:days_ago][lookback][platform.platform] = platform["count(distinct ipaddr)"]
+    end
+  end
+
+  value = repository(:default).adapter.select('SELECT platform, COUNT(DISTINCT ipaddr) 
+                                                                  FROM install_requests
+                                                                  GROUP BY platform;')
+
+  value.each do | platform |
+     stats[:installs][:total][platform.platform] = platform["count(distinct ipaddr)"]
+  end
+
+
+
+
+
+  return JSON.generate(stats)
 end
 
 def saveUpdateComplete(current_time, params, source)

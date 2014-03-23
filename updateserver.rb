@@ -10,6 +10,7 @@ require 'geoip'
 
 require_relative 'lib/models.rb'
 require_relative 'lib/scraper.rb'
+require_relative 'lib/stats.rb'
 
 $CHANNELS = {
   "16"  => "stable",
@@ -22,6 +23,15 @@ $GEOIP =  GeoIP.new(geofile)
 class UpdateHTTP < Sinatra::Base
   # threaded - False: Will take requests on the reactor thread
   #            True:  Will queue request for background thread
+
+
+  def initialize(job)
+    puts job.nil?
+    @statsJob = job
+    super
+  end
+
+  set :public_folder, 'public'
   configure do
     set :threaded, false
   end
@@ -34,7 +44,12 @@ class UpdateHTTP < Sinatra::Base
 
   get '/stats' do
     status 200
-    body getStats($GEOIP)
+    erb :stats
+  end
+
+  get '/json/stats' do
+    status 200
+    body @statsJob.cachedStats
   end
 
 
@@ -106,8 +121,10 @@ class UpdateServer
 
   def initialize(settings)
 
+    @server = self
     @settings = settings
 
+    @stats = nil
     if ENV['UPDATER_ENVIRONMENT'] == "production"
       puts "#{Time.now.utc} Running as production"
       db_url = "mysql://#{settings.db['user']}:#{settings.db['password']}@#{settings.db['hostname']}/#{settings.db['dbname']}"
@@ -126,10 +143,18 @@ class UpdateServer
 
   end
 
+  def getStatsJob()
+    return @stats
+  end
 
   def start_scraping( interval )
     scraper = ScraperJob.new( interval )  
     scraper.scrape()
+  end
+
+  def start_stats( interval )
+    @stats = StatsJob.new( interval, $GEOIP )  
+    puts @stats.nil?
   end
 
   def run()
@@ -141,10 +166,14 @@ class UpdateServer
       host       = @settings.host      # '0.0.0.0'
       port       = @settings.port      # '9000'
       interval   = @settings.interval  # '120'
+      sinatra   = @server
+
+      start_stats( interval )
+      stats = @stats
 
       dispatch = Rack::Builder.app do
         map '/' do
-          run UpdateHTTP.new
+          run UpdateHTTP.new(stats)
         end
       end
 
@@ -164,7 +193,6 @@ class UpdateServer
       })
       init_sighandlers
       start_scraping(interval)
-
 
     end
   
