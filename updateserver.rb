@@ -60,14 +60,14 @@ class UpdateHTTP < Sinatra::Base
   # Request to list available install images
   get '/install' do
     status 200
+    body JSON.dump Release.all
     begin
       puts "Got #{params}"
       current_time = DateTime.now  
       saveInstallRequest(current_time, params, request.ip)
+      body JSON.dump Release.all
     rescue
       puts "Error saving install information..."
-    ensure
-      body JSON.dump Release.all
     end
   end
 
