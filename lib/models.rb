@@ -84,7 +84,8 @@ def getStats(geo_db)
     value = repository(:default).adapter.select('SELECT platform, COUNT(DISTINCT ipaddr) 
                                                   FROM install_requests 
                                                   WHERE time BETWEEN date_sub(now(),INTERVAL ? DAY) 
-                                                  AND date_sub(now(),INTERVAL ? DAY);', lookback, lookback-1)
+                                                  AND date_sub(now(),INTERVAL ? DAY)
+                                                  GROUP BY platform;', lookback, lookback-1)
     stats[:installs][:days_ago][lookback] = {}
     value.each do | platform |
        stats[:installs][:days_ago][lookback][platform.platform] = platform["count(distinct ipaddr)"]
