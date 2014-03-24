@@ -49,6 +49,8 @@ class UpdateHTTP < Sinatra::Base
 
   get '/json/stats' do
     status 200
+    headers \
+      "Access-Control-Allow-Origin" => "*"
     body @statsJob.cachedStats
   end
 
