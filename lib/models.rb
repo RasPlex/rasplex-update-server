@@ -71,7 +71,8 @@ def getStats(geo_db)
   for lookback in (1..7).to_a.reverse
     value = repository(:default).adapter.select('SELECT COUNT(DISTINCT serial) 
                                                   FROM update_requests 
-                                                  WHERE time BETWEEN date_sub(now(),INTERVAL ? DAY) and now();', lookback)
+                                                  WHERE time BETWEEN date_sub(now(),INTERVAL ? DAY) 
+                                                  AND date_sub(now(),INTERVAL ? DAY);', lookback, lookback-1)
     stats[:users][:days_ago][lookback] = value
   end
 
@@ -82,8 +83,8 @@ def getStats(geo_db)
   for lookback in (1..7).to_a.reverse
     value = repository(:default).adapter.select('SELECT platform, COUNT(DISTINCT ipaddr) 
                                                   FROM install_requests 
-                                                  WHERE time BETWEEN date_sub(now(),INTERVAL ? DAY) and now()
-                                                  GROUP BY platform;', lookback)
+                                                  WHERE time BETWEEN date_sub(now(),INTERVAL ? DAY) 
+                                                  AND date_sub(now(),INTERVAL ? DAY);', lookback, lookback-1)
     stats[:installs][:days_ago][lookback] = {}
     value.each do | platform |
        stats[:installs][:days_ago][lookback][platform.platform] = platform["count(distinct ipaddr)"]
