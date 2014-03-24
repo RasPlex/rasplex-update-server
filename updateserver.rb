@@ -50,7 +50,7 @@ class UpdateHTTP < Sinatra::Base
   get '/json/stats' do
     status 200
     headers \
-      "Access-Control-Allow-Origin" => "https://www.rasplex.com"
+      "Access-Control-Allow-Origin" => [ "http://www.rasplex.com", "https://www.rasplex.com"]
     body @statsJob.cachedStats
   end
 
