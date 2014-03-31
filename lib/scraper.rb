@@ -69,12 +69,12 @@ class ScraperJob
       time = DateTime.iso8601(release["published_at"])
 
       notes = body["changes"].join("\n")
-      deprecated = Release.all(:version.not => name)
-      deprecated.each do | dep |
-        puts "Version #{dep.version} is deprecated, deleting"
-        dep.destroy()
-      end
-
+#      deprecated = Release.all(:version.not => name)
+#      deprecated.each do | dep |
+#        puts "Version #{dep.version} is deprecated, deleting"
+#        dep.destroy()
+#      end
+#
       if not Release.last(:version => name ) and not install.nil? and not update.nil?
       
         release = Release.new(
