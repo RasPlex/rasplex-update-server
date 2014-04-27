@@ -222,8 +222,6 @@ database_config = "#{File.join(File.dirname(File.expand_path(__FILE__)),'config'
 config_file config
 config_file database_config
 
-$stdout.reopen(settings.logfile, "a")
-$stderr.reopen(settings.logfile, "a")
 $stdout.sync = true
 $stderr.sync = true
 
