@@ -92,7 +92,7 @@ class UpdateHTTP < Sinatra::Base
     #"revision"=>"000e", "serial"=>"0000000064a15486", "serverUuid"=>"624ab4fc-5eaa-4db2-847e-e41861db6c30", "uuid"=>"28e7d56f-bbee-103a-0aba4607-66a0dc2c"
     puts params.keys
     File.open('crashdata/' + params[:serial], "w") do |f|
-      f.write(params[:dumpfileb64].read)
+      f.write(params[:dumpfileb64])
     end
     return "The crash file was successfully uploaded!"
   end
