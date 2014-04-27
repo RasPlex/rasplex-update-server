@@ -29,7 +29,7 @@ set :deploy_to, "/u/apps/rasplex-update-server"
 #set :linked_files, %w{config/config.yml}
 
 # Default value for linked_dirs is []
-set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle config geoip}
+set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle config geoip crashdata}
 
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }

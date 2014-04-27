@@ -88,6 +88,14 @@ class UpdateHTTP < Sinatra::Base
     end
   end
 
+  post "/crashes" do 
+    puts "Got params #{params}"
+    File.open('crashdata/' + params['dumpfileb64'][:filename], "w") do |f|
+      f.write(params['dumpfileb64'][:tempfile].read)
+    end
+    return "The crash file was successfully uploaded!"
+  end
+
 end
 
 def selectReleases(current_time, params, source)
@@ -217,7 +225,7 @@ config_file database_config
 $stdout.reopen(settings.logfile, "a")
 $stderr.reopen(settings.logfile, "a")
 $stdout.sync = true
-$stdout.sync = true
+$stderr.sync = true
 
 
 # start the application
