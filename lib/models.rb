@@ -55,6 +55,16 @@ class Release
 end
 
 
+class Crash
+  include DataMapper::Resource
+  property :id,                Serial
+  property :crash_path,        String, :required => true, :length => 200, :default => "none" 
+  property :serial,            String, :required => true, :length => 100
+  property :hwrev,             String, :required => true, :length => 200
+  property :submitter_version, String, :required => true, :length => 100
+end
+
+
 def getStats(geo_db)
   stats = {
     :users => {

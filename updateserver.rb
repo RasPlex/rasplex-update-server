@@ -89,12 +89,37 @@ class UpdateHTTP < Sinatra::Base
   end
 
   post "/crashes" do 
-    #"revision"=>"000e", "serial"=>"0000000064a15486", "serverUuid"=>"624ab4fc-5eaa-4db2-847e-e41861db6c30", "uuid"=>"28e7d56f-bbee-103a-0aba4607-66a0dc2c"
-    puts params.keys
-    File.open('crashdata/' + params[:serial], "w") do |f|
-      f.write(params[:dumpfileb64])
+
+    if params.has_key? "dumpfile64" and params.has_key? "serial" \
+      and params.has_key? "revision" and params.has_key? "submitter_version"
+      crash = Crash.new( 
+        :serial            => params[:serial],
+        :hwrev             => params[:revision],
+        :submitter_version => params[:submitter_version]
+      )
+
+      if crash.save
+        puts "saved and got id #{crash.id}"
+      else
+        crash.errors.each do |e|
+          puts e
+        end
+      end
+
+      id = crash.id
+      crashpath = "crashdata/crash_#{id}.dump"
+
+      crash.crash_path = crashpath
+      crash.save
+
+      File.open( crashpath , "w") do |f|
+        f.write(params[:dumpfileb64])
+      end
+      puts "created crash #{id}"
+      return "#{id}"
+    else
+      return "Invalid crash report, missing params"
     end
-    return "The crash file was successfully uploaded!"
   end
 
 end
