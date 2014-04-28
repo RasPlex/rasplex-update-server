@@ -90,7 +90,7 @@ class UpdateHTTP < Sinatra::Base
 
   post "/crashes" do 
 
-    if params.has_key? "dumpfile64" and params.has_key? "serial" \
+    if params.has_key? "dumpfileb64" and params.has_key? "serial" \
       and params.has_key? "revision" and params.has_key? "submitter_version"
       crash = Crash.new( 
         :serial            => params[:serial],
@@ -99,7 +99,7 @@ class UpdateHTTP < Sinatra::Base
       )
 
       if crash.save
-        puts "saved and got id #{crash.id}"
+        puts "Created crash id #{crash.id}"
       else
         crash.errors.each do |e|
           puts e
