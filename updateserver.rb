@@ -95,7 +95,8 @@ class UpdateHTTP < Sinatra::Base
       crash = Crash.new( 
         :serial            => params[:serial],
         :hwrev             => params[:revision],
-        :submitter_version => params[:submitter_version]
+        :submitter_version => params[:submitter_version],
+        :time              => DateTime.now
       )
 
       if crash.save

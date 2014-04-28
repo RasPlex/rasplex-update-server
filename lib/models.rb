@@ -62,6 +62,7 @@ class Crash
   property :serial,            String, :required => true, :length => 100
   property :hwrev,             String, :required => true, :length => 200
   property :submitter_version, String, :required => true, :length => 100
+  property :time,              DateTime, :required => true
 end
 
 
