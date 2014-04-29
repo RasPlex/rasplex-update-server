@@ -90,14 +90,15 @@ class UpdateHTTP < Sinatra::Base
 
   post "/crashes" do 
 
-    puts params.keys
-    puts params[:version]
     if params.has_key? "dumpfileb64" and params.has_key? "serial" \
-      and params.has_key? "revision" and params.has_key? "submitter_version"
+      and params.has_key? "revision" and params.has_key? "submitter_version" \
+      and params.has_key? "version" 
       crash = Crash.new( 
         :serial            => params[:serial],
         :hwrev             => params[:revision],
+        :version           => params[:version],
         :submitter_version => params[:submitter_version],
+        :ipaddr            => request.ip,
         :time              => DateTime.now
       )
 

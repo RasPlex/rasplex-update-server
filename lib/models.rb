@@ -58,10 +58,12 @@ end
 class Crash
   include DataMapper::Resource
   property :id,                Serial
-  property :crash_path,        String, :required => true, :length => 200, :default => "none" 
-  property :serial,            String, :required => true, :length => 100
-  property :hwrev,             String, :required => true, :length => 200
+  property :version, String, :required => true, :length => 100
   property :submitter_version, String, :required => true, :length => 100
+  property :crash_path,        String, :required => true, :length => 200, :default => "none" 
+  property :serial,            String, :required => true 
+  property :hwrev,             String, :required => true 
+  property :ipaddr,            String, :required => true
   property :time,              DateTime, :required => true
 end
 
