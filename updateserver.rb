@@ -113,8 +113,8 @@ class UpdateHTTP < Sinatra::Base
       crash.crash_path = crashpath
       crash.save
 
-      File.open( crashpath , "w") do |f|
-        f.write(params[:dumpfileb64])
+      File.open( crashpath , "wb") do |f|
+        f.write(Base64.decode64(params[:dumpfileb64]))
       end
       puts "created crash #{id}"
       return "#{id}"
