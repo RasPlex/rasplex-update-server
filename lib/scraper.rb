@@ -51,6 +51,7 @@ class ScraperJob
       update = nil
       release["assets"].each do | asset |
 
+        puts asset['name']
         if asset['name'] =~ /\.img\.gz$/  
           install = asset
           install["download_url"] = "#{baseurl}/#{name}/#{asset['name']}"
