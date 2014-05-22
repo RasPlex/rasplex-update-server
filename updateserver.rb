@@ -15,6 +15,7 @@ require_relative 'lib/stats.rb'
 $CHANNELS = {
   "16"  => "stable",
   "2" => "prerelease",
+  "4" => "beta",
 }
 geofile = "#{File.join(File.dirname(File.expand_path(__FILE__)),'geoip','GeoLiteCity.dat')}"
 puts geofile

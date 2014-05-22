@@ -39,7 +39,12 @@ class ScraperJob
 
       body = YAML.load(release["body"])
       name = release["name"]
-      channel = release["prerelease"] ? "prerelease" : "stable"
+
+      if body.has_key? "channel" # allow override of the channel via yaml
+        channel = body["channel"]
+      else
+        channel = release["prerelease"] ? "prerelease" : "stable"
+      end
 
       install = nil
       update = nil
@@ -63,7 +68,6 @@ class ScraperJob
             end
           end
         end
-
       end
 
       time = DateTime.iso8601(release["published_at"])
