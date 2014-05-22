@@ -80,8 +80,9 @@ class ScraperJob
 #        dep.destroy()
 #      end
 #
-      if not Release.last(:version => name ) and not install.nil? and not update.nil?
-      
+      if not install.nil? and not update.nil?
+        puts "Saving release"
+
         release = Release.new(
             :install_url => install["download_url"],
             :install_sum => install["checksum"],
@@ -101,6 +102,8 @@ class ScraperJob
           end
         end
 
+      else
+        puts "Not saving release"
       end
 
     end
