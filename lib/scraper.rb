@@ -8,8 +8,9 @@ require_relative 'models.rb'
 
 class ScraperJob
 
-  def initialize( interval )
+  def initialize( interval, apikey )
     # make this a config constant
+    @apikey = apikey
     EM.add_periodic_timer(interval) do
       scrape
     end
@@ -19,7 +20,9 @@ class ScraperJob
 
 
     puts "#{Time.now.utc} Ran a scrape"
-    response = HTTParty.get('https://api.github.com/repos/Rasplex/Rasplex/releases', :headers => {"User-Agent" => "Wget/1.14 (linux-gnu)"})
+    response = HTTParty.get('https://api.github.com/repos/Rasplex/Rasplex/releases', :headers => {"User-Agent" => "Wget/1.14 (linux-gnu)",
+                                                                                                  "Authorization" => "token #{@apikey}"
+                                                                                                 })
 
     #puts response.body, response.code, response.message, response.headers.inspect
 

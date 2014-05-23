@@ -1,1 +1,4 @@
 db/development.db
+config/database.yml
+crashdata
+geoip

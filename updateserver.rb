@@ -189,12 +189,12 @@ class UpdateServer
   end
 
   def start_scraping( interval )
-    scraper = ScraperJob.new( interval )  
+    scraper = ScraperJob.new( interval, @settings.github_api_token )
     scraper.scrape()
   end
 
   def start_stats( interval )
-    @stats = StatsJob.new( interval, $GEOIP )  
+    @stats = StatsJob.new( interval, $GEOIP )
     puts @stats.nil?
   end
 
@@ -250,8 +250,10 @@ end
 # Load configs
 config = "#{File.join(File.dirname(File.expand_path(__FILE__)),'config','config.yml')}"
 database_config = "#{File.join(File.dirname(File.expand_path(__FILE__)),'config','database.yml')}"
+secrets_config  = "#{File.join(File.dirname(File.expand_path(__FILE__)),'config','secrets.yml')}"
 config_file config
 config_file database_config
+config_file secrets_config
 
 $stdout.sync = true
 $stderr.sync = true
