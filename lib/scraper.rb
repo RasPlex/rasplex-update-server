@@ -44,11 +44,9 @@ class ScraperJob
       name = release["name"]
 
       puts release["draft"]
-      if body.has_key? "channel" # allow override of the channel via yaml
+      if not release["draft"] and body.has_key? "channel" # allow override of the channel via yaml
         channel = body["channel"]
         puts "Adding release to channel #{channel}"
-      elsif release["draft"]
-        channel = "beta" 
       else
         channel = release["prerelease"] ? "prerelease" : "stable"
       end
