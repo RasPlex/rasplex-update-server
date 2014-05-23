@@ -84,7 +84,7 @@ class ScraperJob
         time = DateTime.now.iso8601
       end
 
-      if body.has_key["changes"]
+      if body.has_key? "changes"
         notes = body["changes"].join("\n")
       else
         puts "Release notes are required"
