@@ -46,6 +46,8 @@ class ScraperJob
       if body.has_key? "channel" # allow override of the channel via yaml
         channel = body["channel"]
         puts "Adding release to channel #{channel}"
+      elsif body["draft"]
+        channel = "beta" 
       else
         channel = release["prerelease"] ? "prerelease" : "stable"
       end
@@ -75,7 +77,11 @@ class ScraperJob
         end
       end
 
-      time = DateTime.iso8601(release["published_at"])
+      if not body["draft"]
+        time = DateTime.iso8601(release["published_at"])
+      else
+        time = DateTime.now.iso8601
+      end
 
       notes = body["changes"].join("\n")
 #      deprecated = Release.all(:version.not => name)
