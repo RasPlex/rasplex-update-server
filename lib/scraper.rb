@@ -84,7 +84,12 @@ class ScraperJob
         time = DateTime.now.iso8601
       end
 
-      notes = body["changes"].join("\n")
+      if body.has_key["changes"]
+        notes = body["changes"].join("\n")
+      else
+        puts "Release notes are required"
+        notes = "Invalid release - no release notes"
+      end
 #      deprecated = Release.all(:version.not => name)
 #      deprecated.each do | dep |
 #        puts "Version #{dep.version} is deprecated, deleting"
