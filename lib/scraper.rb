@@ -43,10 +43,11 @@ class ScraperJob
       body = YAML.load(release["body"])
       name = release["name"]
 
+      puts release["draft"]
       if body.has_key? "channel" # allow override of the channel via yaml
         channel = body["channel"]
         puts "Adding release to channel #{channel}"
-      elsif body["draft"]
+      elsif release["draft"]
         channel = "beta" 
       else
         channel = release["prerelease"] ? "prerelease" : "stable"
@@ -77,7 +78,7 @@ class ScraperJob
         end
       end
 
-      if not body["draft"]
+      if not release["draft"]
         time = DateTime.iso8601(release["published_at"])
       else
         time = DateTime.now.iso8601
