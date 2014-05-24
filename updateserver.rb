@@ -144,7 +144,7 @@ def selectReleases(current_time, params, source, settings)
   serials = settings.values().join(',').split(',')
   puts "Whitelisted serials: "+serials.to_s
   
-  if channel != "beta" or serials.includes? params["serial"]
+  if channel != "beta" or serials.include? params["serial"]
     candidates = Release.all(:channel => channel.downcase)
   end
 
