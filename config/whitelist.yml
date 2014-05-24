@@ -3,6 +3,8 @@
 # Each user will be 2 spaces in, then two more spaces in will be a list of serials
 # The serials are denoted with a "-" followed by a space
 
+# Only serials registered below can access our beta channel
+
 # Read your serial with the following command:
 # cat /proc/cpuinfo  | grep Serial | awk '{print $3}'
 
