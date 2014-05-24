@@ -25,11 +25,10 @@ set :deploy_to, "/u/apps/rasplex-update-server"
 # set :pty, true
 
 # Default value for :linked_files is []
-#set :linked_files, %w{config/database.yml}
-#set :linked_files, %w{config/config.yml}
+set :linked_files, %w{config/config.yml config/secrets.yml config/database.yml }
 
 # Default value for linked_dirs is []
-set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle config/secrets.yml config/database.yml config/config.yml geoip crashdata}
+set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle  geoip crashdata}
 
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
