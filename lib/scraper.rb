@@ -65,6 +65,9 @@ class ScraperJob
             if data.has_key?("md5sum")
               install["checksum"] = data["md5sum"]
             end
+            if data.has_key?("url") # allow url override
+              install["download_url"] = data["url"]
+            end
           end
 
         elsif asset['name'] =~ /\.tar\.gz$/
@@ -73,6 +76,9 @@ class ScraperJob
           body["update"].each do | data |
             if data.has_key?("shasum")
               update["checksum"] = data["shasum"]
+            end
+            if data.has_key?("url") # allow url override
+              update["download_url"] = data["url"]
             end
           end
         end
