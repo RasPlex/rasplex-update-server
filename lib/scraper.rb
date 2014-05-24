@@ -34,7 +34,6 @@ class ScraperJob
 
   def parse ( body )
 
-    baseurl = "https://github.com/RasPlex/RasPlex/releases/download"
 
     payload = JSON.parse(body)
   
@@ -42,6 +41,7 @@ class ScraperJob
 
       body = YAML.load(release["body"])
       name = release["name"]
+      baseurl = release["html_url"].gsub("/tag/","/download/")
 
       puts release["draft"]
       if not release["draft"] and body.has_key? "channel" # allow override of the channel via yaml
@@ -58,7 +58,7 @@ class ScraperJob
         puts asset['name']
         if asset['name'] =~ /\.img\.gz$/  
           install = asset
-          install["download_url"] = "#{baseurl}/#{name}/#{asset['name']}"
+          install["download_url"] = "#{baseurl}/#{asset['name']}"
           body["install"].each do | data |
             if data.has_key?("md5sum")
               install["checksum"] = data["md5sum"]
@@ -67,7 +67,7 @@ class ScraperJob
 
         elsif asset['name'] =~ /\.tar\.gz$/
           update = asset
-          update["download_url"] = "#{baseurl}/#{name}/#{asset['name']}"
+          update["download_url"] = "#{baseurl}/#{asset['name']}"
           body["update"].each do | data |
             if data.has_key?("shasum")
               update["checksum"] = data["shasum"]
