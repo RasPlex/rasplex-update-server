@@ -258,7 +258,7 @@ end
 config = "#{File.join(File.dirname(File.expand_path(__FILE__)),'config','config.yml')}"
 database_config = "#{File.join(File.dirname(File.expand_path(__FILE__)),'config','database.yml')}"
 secrets_config  = "#{File.join(File.dirname(File.expand_path(__FILE__)),'config','secrets.yml')}"
-whitelist       = "#{File.join(File.dirname(File.expand_path(__FILE__)),'config','whitelist.yml')}"
+whitelist       = "#{File.join(File.dirname(File.expand_path(__FILE__)),'whitelist.yml')}"
 config_file config
 config_file database_config
 config_file secrets_config
