@@ -146,6 +146,8 @@ def selectReleases(current_time, params, source, settings)
   
   if channel != "beta" or serials.include? params["serial"]
     candidates = Release.all(:channel => channel.downcase)
+  else
+    candidates = []
   end
 
   stable = Release.all(:channel => "stable")
