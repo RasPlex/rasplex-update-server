@@ -1,0 +1,27 @@
+# Add serials in this list here, this file is in yml format.
+# Each level needs to have 2 spaces.
+# Each user will be 2 spaces in, then two more spaces in will be a list of serials
+# The serials are denoted with a "-" followed by a space
+
+# Read your serial with the following command:
+# cat /proc/cpuinfo  | grep Serial | awk '{print $3}'
+
+serials:
+  dalehamel:
+    - 0000000064a15486
+  longchair:
+    - 00000000bdf700c1
+    - another serial
+    - a serial for each pi
+  knightorc:
+    - serial here
+  dlanor:
+    - serial here
+  liiight:
+    - serial here
+  guydev:
+    - serial here
+  moonshine:
+    - serial here
+  vulcanjedi:
+    - serial here
