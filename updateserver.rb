@@ -26,9 +26,10 @@ class UpdateHTTP < Sinatra::Base
   #            True:  Will queue request for background thread
 
 
-  def initialize(job)
+  def initialize(job, settings)
     puts job.nil?
     @statsJob = job
+    @settings = settings
     super
   end
 
@@ -69,8 +70,8 @@ class UpdateHTTP < Sinatra::Base
   # Request to list available updates in channel
   get '/update' do
     status 200
-    current_time = DateTime.now  
-    releases = selectReleases(current_time, params, request.ip)
+    current_time = DateTime.now
+    releases = selectReleases(current_time, params, request.ip, @settings.serials)
     puts "Got #{params}"
     erb :update, :locals => { :releases => releases }
   end
@@ -129,10 +130,8 @@ class UpdateHTTP < Sinatra::Base
 
 end
 
-def selectReleases(current_time, params, source)
+def selectReleases(current_time, params, source, settings)
   saveUpdateRequest(current_time, params, source)
-
-  
 
   channel = "stable"
   if params["channel"] and $CHANNELS.has_key? params["channel"]
@@ -140,7 +139,14 @@ def selectReleases(current_time, params, source)
   end
   puts "Using channel #{channel}"
 
-  candidates = Release.all(:channel => channel.downcase)
+
+  # Only whitelisted beta users can download
+  serials = settings.serials.values().join(',').split(',')
+  puts "Whitelisted serials: "+serials.to_s
+  
+  if channel != "beta" or serials.includes? params["serial"]
+    candidates = Release.all(:channel => channel.downcase)
+  end
 
   stable = Release.all(:channel => "stable")
   if channel != "stable" and not stable.nil? and stable.length > 0
@@ -211,10 +217,11 @@ class UpdateServer
 
       start_stats( interval )
       stats = @stats
+      settings = @settings
 
       dispatch = Rack::Builder.app do
         map '/' do
-          run UpdateHTTP.new(stats)
+          run UpdateHTTP.new(stats, settings)
         end
       end
 
@@ -251,9 +258,11 @@ end
 config = "#{File.join(File.dirname(File.expand_path(__FILE__)),'config','config.yml')}"
 database_config = "#{File.join(File.dirname(File.expand_path(__FILE__)),'config','database.yml')}"
 secrets_config  = "#{File.join(File.dirname(File.expand_path(__FILE__)),'config','secrets.yml')}"
+whitelist       = "#{File.join(File.dirname(File.expand_path(__FILE__)),'config','whitelist.yml')}"
 config_file config
 config_file database_config
 config_file secrets_config
+config_file whitelist
 
 $stdout.sync = true
 $stderr.sync = true
