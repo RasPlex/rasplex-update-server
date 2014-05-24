@@ -36,7 +36,8 @@ class ScraperJob
 
 
     payload = JSON.parse(body)
-  
+ 
+    versions = []
     payload.each do | release |
 
       body = YAML.load(release["body"])
@@ -44,11 +45,12 @@ class ScraperJob
       baseurl = release["html_url"].gsub("/tag/","/download/")
 
       puts release["draft"]
-      if not release["draft"] and body.has_key? "channel" # allow override of the channel via yaml
+      if body.has_key? "channel" 
         channel = body["channel"]
-        puts "Adding release to channel #{channel}"
+        puts "Adding release #{name} to channel #{channel}"
       else
-        channel = release["prerelease"] ? "prerelease" : "stable"
+        puts "Release #{name} will not be added as it does not specify a channel"
+        next
       end
 
       install = nil
@@ -93,7 +95,8 @@ class ScraperJob
 #        puts "Version #{dep.version} is deprecated, deleting"
 #        dep.destroy()
 #      end
-#
+
+      versions.push(name)#
       if not Release.last(:version => name ) and not install.nil? and not update.nil?
         puts "Saving release"
 
@@ -117,9 +120,18 @@ class ScraperJob
         end
 
       else
-        puts "Not saving release"
+        puts "Not saving release as it already exists or is invalid"
       end
 
+    end
+
+
+    #clean up old releases
+    Release.all.each do | release |
+      if not versions.include? release.version
+        puts "Cleaning up old version #{release.version}"
+        release.destroy
+      end
     end
 
   end
