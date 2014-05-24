@@ -141,7 +141,7 @@ def selectReleases(current_time, params, source, settings)
 
 
   # Only whitelisted beta users can download
-  serials = settings.serials.values().join(',').split(',')
+  serials = settings['serials'].values().join(',').split(',')
   puts "Whitelisted serials: "+serials.to_s
   
   if channel != "beta" or serials.includes? params["serial"]
