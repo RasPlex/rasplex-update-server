@@ -30,7 +30,7 @@ class UpdateHTTP < Sinatra::Base
     puts job.nil?
     @statsJob = job
     @settings = settings
-    super
+    super()
   end
 
   set :public_folder, 'public'
