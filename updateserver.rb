@@ -84,7 +84,9 @@ class UpdateHTTP < Sinatra::Base
       puts "Got #{params}"
       current_time = DateTime.now  
       saveInstallRequest(current_time, params, request.ip)
-      body JSON.dump Release.all
+      candidates      = Release.all(:channel => 'stable')
+      candidates.push = Release.all(:channel => 'prerelease')
+      body JSON.dump candidates 
     rescue
       puts "Error saving install information..."
     end
