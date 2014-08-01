@@ -103,7 +103,7 @@ class ScraperJob
 #      end
 
       versions.push(name)#
-      if not Release.last(:version => name ) and not install.nil? and not update.nil?
+      if not Release.last(:version => name ) and not install.nil?
         puts "Saving release"
 
         if not update.nil?
