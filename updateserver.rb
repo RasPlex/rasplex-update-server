@@ -161,7 +161,7 @@ def selectReleases(current_time, params, source, settings)
 
   candidates.each do | candidate |
     # Do any filtering here
-    releases.push candidate
+    releases.push candidate unless candidate.update_url.nil?
   end
 
   return releases
