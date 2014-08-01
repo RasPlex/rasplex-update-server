@@ -106,17 +106,31 @@ class ScraperJob
       if not Release.last(:version => name ) and not install.nil? and not update.nil?
         puts "Saving release"
 
-        release = Release.new(
-            :install_url => install["download_url"],
-            :install_sum => install["checksum"],
-            :update_url  => update["download_url"],
-            :update_sum  => update["checksum"],
-            :version     => name,
-            :channel     => channel,
-            :autoupdate  => true,
-            :time        => time,
-            :notes       => notes 
-        )
+        if not update.nil?
+
+          release = Release.new(
+              :install_url => install["download_url"],
+              :install_sum => install["checksum"],
+              :update_url  => update["download_url"],
+              :update_sum  => update["checksum"],
+              :version     => name,
+              :channel     => channel,
+              :autoupdate  => true,
+              :time        => time,
+              :notes       => notes 
+          )
+        else
+
+          release = Release.new(
+              :install_url => install["download_url"],
+              :install_sum => install["checksum"],
+              :version     => name,
+              :channel     => channel,
+              :autoupdate  => false,
+              :time        => time,
+              :notes       => notes 
+          )
+        end
         if release.save
           puts "#{Time.now.utc} Release #{name} added #{JSON.pretty_generate(release)}"
         else
