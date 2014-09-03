@@ -142,7 +142,7 @@ class ScraperJob
       else
         puts "Not saving release as it already exists or is invalid"
         puts Release.last(:version => name )
-        puts instal.nil?
+        puts install.nil?
       end
 
     end
