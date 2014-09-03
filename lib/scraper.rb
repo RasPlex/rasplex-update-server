@@ -56,7 +56,7 @@ class ScraperJob
       install = nil
       update = nil
       release["assets"].each do | asset |
-
+        puts asset
         puts asset['name']
         if asset['name'] =~ /\.img\.gz$/  
           install = asset
@@ -141,6 +141,8 @@ class ScraperJob
 
       else
         puts "Not saving release as it already exists or is invalid"
+        puts Release.last(:version => name )
+        puts instal.nil?
       end
 
     end
