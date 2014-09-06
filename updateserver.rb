@@ -147,14 +147,16 @@ def selectReleases(current_time, params, source, settings)
   puts "Whitelisted serials: "+serials.to_s
 
   if channel != "beta" or serials.include? params["serial"]
-    candidates = [Release.all(:channel => channel.downcase)]
+    candidates = Release.all(:channel => channel.downcase)
   else
    candidates = []
   end
 
   stable = Release.all(:channel => "stable")
   if channel != "stable" and not stable.nil? and stable.length > 0
-    candidates.push(stable)
+    stable.each do | candidate |
+      candidates.push candidate
+    end
   end
 
   releases = []
