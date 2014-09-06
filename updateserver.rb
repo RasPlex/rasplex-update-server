@@ -145,11 +145,11 @@ def selectReleases(current_time, params, source, settings)
   # Only whitelisted beta users can download
   serials = settings.values().join(',').split(',')
   puts "Whitelisted serials: "+serials.to_s
-  
+
   if channel != "beta" or serials.include? params["serial"]
-    candidates = Release.all(:channel => channel.downcase)
+    candidates = [Release.all(:channel => channel.downcase)]
   else
-    candidates = []
+   candidates = []
   end
 
   stable = Release.all(:channel => "stable")
