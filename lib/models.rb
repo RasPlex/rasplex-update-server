@@ -51,7 +51,7 @@ class Release
   property :channel,     String, :required => true
   property :autoupdate,  Boolean, :required => false
   property :time,        DateTime, :required => true
-  property :notes,       String, :required => true, :length => 800
+  property :notes,       String, :required => true, :length => 2000
 end
 
 
